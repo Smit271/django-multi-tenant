@@ -1,0 +1,23 @@
+{
+  "tenant1": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": "tenant1",
+    "USER": "root",
+    "HOST": "localhost",
+    "PORT": "",
+    "PASSWORD": "password",
+    "ATOMIC_REQUESTS": false,
+    "AUTOCOMMIT": true,
+    "CONN_MAX_AGE": 0,
+    "CONN_HEALTH_CHECKS": false,
+    "OPTIONS": {},
+    "TIME_ZONE": null,
+    "TEST": {
+      "CHARSET": null,
+      "COLLATION": null,
+      "MIGRATE": true,
+      "MIRROR": null,
+      "NAME": null
+    }
+  }
+}

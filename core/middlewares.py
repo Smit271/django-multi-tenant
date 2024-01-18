@@ -3,7 +3,9 @@ import threading
 from django.db import connection
 from .utils import get_tenant
 from .utils import tenant_db_from_request
+from django.conf import settings
 
+DATABASES = settings.DATABASES
 THREAD_LOCAL = threading.local()
 
 
@@ -48,11 +50,11 @@ class MTMiddleware:
 
         # ===== Switch the database connection =====
         connection.close()
-        connection.settings_dict['NAME'] = db_info.name if db_info else 'temp'
+        connection.settings_dict = DATABASES[f'{db_info.name}'] if db_info is not None else DATABASES['default']
         connection.connect()
         # ==========================================
         print("===> connection.settings_dict: ", connection.settings_dict)
-        setattr(THREAD_LOCAL, "DB", db_info.name if db_info else 'temp')
+        setattr(THREAD_LOCAL, "DB", db_info.name if db_info else 'default')
         # connection.db_info = db_info if db_info is not None else default_db_info
         response = self.get_response(request)
         print("===> response: ", response)

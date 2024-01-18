@@ -3,6 +3,7 @@ from .middlewares import get_current_db_name
 
 class TenantRouter:
     def db_for_read(self, model, **hints):
+        print("===> get_current_db_name(): ", get_current_db_name())
         return get_current_db_name()
 
     def db_for_write(self, model, **hints):
