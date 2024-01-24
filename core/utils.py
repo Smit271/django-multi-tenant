@@ -1,7 +1,13 @@
 import json
+
 from django.db.models import F
+from django.db import connection
+from django.conf import settings
+
 from core.models import DomainDb, DbDetails
 from core.constants import EXTRA_ARGS
+from .middlewares import set_db_for_router
+
 
 def hostname_from_request(request):
     # split on `:` to remove port
@@ -15,9 +21,26 @@ def tenant_db_from_request(request):
 
 def get_tenant(hostname):
     try:
+        print("===> settings.DATABASES: ", settings.DATABASES)
+        print("===> hostname in get_tenant: ", hostname)
+        print("===> connection.settings_dict  in get_tenant: ",
+            connection.settings_dict)
+        # ===== Switch the database connection =====
+        # connection.close()
+        # connection.settings_dict = settings.DATABASES['default']
+        # connection.connect()
+        # ==========================================
+
+        set_db_for_router('default')
         domain_db = DomainDb.objects.using('default').get(name=hostname)
+        print("===> domain_db in get_tenant: ", domain_db)
         db_obj = DbDetails.objects.using('default').get(id=domain_db.db_id)
-    except:
+        print("===> db_obj in get_tenant: ", db_obj)
+        
+        set_db_for_router(db_obj.name)
+    except Exception as e:
+        set_db_for_router('default')
+        print("====> Exception in get_tenant: ", e)
         db_obj = None
     return db_obj
 
